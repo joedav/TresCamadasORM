@@ -17,6 +17,16 @@ namespace Database
         /// </summary>
         void Salvar();
 
+        /// <summary>
+        /// Deletar
+        /// </summary>
+        void Deletar();
+
+        /// <summary>
+        /// Criar tabela
+        /// </summary>
+        void CriarTabela();
+
         List<IBase> Todos();
 
         List<IBase> Buscar();

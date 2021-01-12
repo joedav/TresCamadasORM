@@ -33,6 +33,49 @@ namespace Database
         }
 
         /// <summary>
+        /// Criar tabela
+        /// </summary>
+        public void CriarTabela()
+        {
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                string chavePrimaria = "";
+                List<string> campos = new List<string>();
+                foreach (PropertyInfo pi in this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    OpcoesBase opcoesBase = (OpcoesBase)pi.GetCustomAttribute(typeof(OpcoesBase));
+                    if (opcoesBase != null && opcoesBase.UsarNoBancoDeDados)
+                    {
+                        if (opcoesBase.ChavePrimaria)
+                        {
+                            chavePrimaria = pi.Name + " int identity, ";
+                        }
+                        else
+                        {
+                            campos.Add(string.Concat(pi.Name, " " + TipoPropriedade(pi)));
+                        }
+                    }
+                }
+
+                string tabelaExist = "IF EXISTS (SELECT * FROM dbo.sysobjects WHERE ID = OBJECT_ID(N'[dbo].[" + this.GetType().Name + "s]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)"
+                    + "DROP TABLE " + this.GetType().Name + "s;";
+                SqlCommand cmd = new SqlCommand(tabelaExist, conn);
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+                cmd.Connection.Close();
+
+                string queryString = $"CREATE TABLE {this.GetType().Name}s (";
+                queryString += chavePrimaria;
+                queryString += string.Join(", ", campos.ToArray()) + ");";
+
+                SqlCommand cmdTable = new SqlCommand(queryString, conn);
+                cmdTable.Connection.Open();
+                cmdTable.ExecuteNonQuery();
+                cmdTable.Connection.Close();
+            }
+        }
+
+        /// <summary>
         /// Realiza busca
         /// </summary>
         /// <returns>Lista</returns>
@@ -174,6 +217,30 @@ namespace Database
                 OpcoesBase opcoesBase = (OpcoesBase)pi.GetCustomAttribute(typeof(OpcoesBase));
                 if (opcoesBase != null && opcoesBase.UsarNoBancoDeDados)
                     pi.SetValue(obj, reader[pi.Name]);
+            }
+        }
+
+
+        /// <summary>
+        /// Retorna o tipo da propriedade
+        /// </summary>
+        /// <returns></returns>
+        private string TipoPropriedade(PropertyInfo pi)
+        {
+            switch (pi.PropertyType.Name)
+            {
+                case "Int32":
+                    return "int";
+                case "Int64":
+                    return "bigint";
+                case "Double":
+                    return "decimal(9,2)";
+                case "Single":
+                    return "float";
+                case "Boolean":
+                    return "bit";
+                default:
+                    return "varchar(255)";
             }
         }
     }

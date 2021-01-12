@@ -1,6 +1,7 @@
 ﻿using Business;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -68,6 +69,12 @@ namespace TresCamadas
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            var carro = new Carro { Nome = "GLA 250 Sport", Disponivel = true, Marca = "Mercedes", Quantidade = 15, Valor = 300000.000 };
+            // carro.CriarTabela(); // faz chamada para criação da tabela
+            carro.Salvar();
+
+
+
             /*var fornecedor = new Fornecedor();
             fornecedor.Nome = "Fornecedor Teste";
             fornecedor.Telefone = "112312312";
