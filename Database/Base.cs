@@ -16,7 +16,7 @@ namespace Database
         /// </summary>
         private string connString = ConfigurationManager.AppSettings["SqlConnection"];
 
-        public string Key
+        public int Key
         {
             get
             {
@@ -26,9 +26,9 @@ namespace Database
                 {
                     OpcoesBase opcoesBase = (OpcoesBase)pi.GetCustomAttribute(typeof(OpcoesBase));
                     if (opcoesBase != null && opcoesBase.ChavePrimaria)
-                        return Convert.ToString(pi.GetValue(this));
+                        return Convert.ToInt32(pi.GetValue(this));
                 }
-                return null;
+                return 0;
             }
         }
 
@@ -91,11 +91,31 @@ namespace Database
                     OpcoesBase opcoesBase = (OpcoesBase)pi.GetCustomAttribute(typeof(OpcoesBase));
                     if (opcoesBase != null && opcoesBase.UsarNoBancoDeDados && !opcoesBase.Identity)
                     {
-                        campos.Add(pi.Name);
-                        valores.Add(string.Concat("'", pi.GetValue(this), "'"));
+                        if (Key == 0)
+                        {
+                            campos.Add(pi.Name);
+                            valores.Add(string.Concat("'", pi.GetValue(this), "'"));
+                        }
+                        else
+                        {
+                            valores.Add(string.Concat(pi.Name, " = '", pi.GetValue(this), "'"));
+                        }
                     }
                 }
-                string queryString = string.Concat("INSERT INTO ", this.GetType().Name, "s (", string.Join(",", campos.ToArray()), ") values(", string.Join(",", valores.ToArray()), ");");
+
+
+
+                string queryString = "";
+                if (Key == 0)
+                {
+                    queryString = string.Concat("INSERT INTO ", this.GetType().Name, "s (", string.Join(",", campos.ToArray()), ") values(", string.Join(",", valores.ToArray()), ");");
+                }
+                else
+                {
+                    queryString = string.Concat("UPDATE ", this.GetType().Name, "s SET ", string.Join(",", valores.ToArray()), " WHERE ID =", Key, ";");
+                }
+
+
                 SqlCommand cmd = new SqlCommand(queryString, conn);
                 cmd.Connection.Open();
                 cmd.ExecuteNonQuery();
@@ -107,7 +127,7 @@ namespace Database
         /// Busca todos
         /// </summary>
         /// <returns>Todos</returns>
-        public List<IBase> Todos()
+        public virtual List<IBase> Todos()
         {
             var list = new List<IBase>();
             using (SqlConnection conn = new SqlConnection(connString))
@@ -127,6 +147,21 @@ namespace Database
             return list;
         }
 
+        public virtual void Deletar()
+        {
+            if (Key != 0)
+            {
+                using (SqlConnection conn = new SqlConnection(connString))
+                {
+                    string queryString = $"DELETE FROM {this.GetType().Name}s WHERE Id = '{Key}';";
+                    SqlCommand cmd = new SqlCommand(queryString, conn);
+                    cmd.Connection.Open();
+                    cmd.ExecuteNonQuery();
+                    cmd.Connection.Close();
+                }
+            }
+        }
+
         /// <summary>
         /// SetProperty
         /// </summary>
@@ -138,7 +173,7 @@ namespace Database
             {
                 OpcoesBase opcoesBase = (OpcoesBase)pi.GetCustomAttribute(typeof(OpcoesBase));
                 if (opcoesBase != null && opcoesBase.UsarNoBancoDeDados)
-                    pi.SetValue(obj, reader[pi.Name].ToString());
+                    pi.SetValue(obj, reader[pi.Name]);
             }
         }
     }

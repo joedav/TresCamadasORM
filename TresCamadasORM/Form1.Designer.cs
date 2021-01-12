@@ -38,6 +38,13 @@ namespace TresCamadas
             this.btnGravar = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageUsuarios = new System.Windows.Forms.TabPage();
+            this.lblId = new System.Windows.Forms.Label();
+            this.lblIdText = new System.Windows.Forms.Label();
+            this.dgvUsuarios = new System.Windows.Forms.DataGridView();
+            this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Nome = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Telefone = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CPF = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPageEnderecos = new System.Windows.Forms.TabPage();
             this.txtEstado = new System.Windows.Forms.TextBox();
             this.txtCidade = new System.Windows.Forms.TextBox();
@@ -57,8 +64,10 @@ namespace TresCamadas
             this.label4 = new System.Windows.Forms.Label();
             this.lblTelResult = new System.Windows.Forms.Label();
             this.lblCPFResult = new System.Windows.Forms.Label();
+            this.btnDeletar = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPageUsuarios.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUsuarios)).BeginInit();
             this.tabPageEnderecos.SuspendLayout();
             this.tabPageResultado.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEnderecos)).BeginInit();
@@ -119,7 +128,7 @@ namespace TresCamadas
             // 
             // btnGravar
             // 
-            this.btnGravar.Location = new System.Drawing.Point(195, 154);
+            this.btnGravar.Location = new System.Drawing.Point(313, 96);
             this.btnGravar.Name = "btnGravar";
             this.btnGravar.Size = new System.Drawing.Size(112, 28);
             this.btnGravar.TabIndex = 6;
@@ -135,11 +144,14 @@ namespace TresCamadas
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(432, 478);
+            this.tabControl1.Size = new System.Drawing.Size(448, 481);
             this.tabControl1.TabIndex = 7;
             // 
             // tabPageUsuarios
             // 
+            this.tabPageUsuarios.Controls.Add(this.lblId);
+            this.tabPageUsuarios.Controls.Add(this.lblIdText);
+            this.tabPageUsuarios.Controls.Add(this.dgvUsuarios);
             this.tabPageUsuarios.Controls.Add(this.txtNome);
             this.tabPageUsuarios.Controls.Add(this.btnGravar);
             this.tabPageUsuarios.Controls.Add(this.label1);
@@ -150,10 +162,66 @@ namespace TresCamadas
             this.tabPageUsuarios.Location = new System.Drawing.Point(4, 24);
             this.tabPageUsuarios.Name = "tabPageUsuarios";
             this.tabPageUsuarios.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageUsuarios.Size = new System.Drawing.Size(424, 450);
+            this.tabPageUsuarios.Size = new System.Drawing.Size(440, 453);
             this.tabPageUsuarios.TabIndex = 0;
             this.tabPageUsuarios.Text = "Usuários";
             this.tabPageUsuarios.UseVisualStyleBackColor = true;
+            // 
+            // lblId
+            // 
+            this.lblId.AutoSize = true;
+            this.lblId.Location = new System.Drawing.Point(379, 15);
+            this.lblId.Name = "lblId";
+            this.lblId.Size = new System.Drawing.Size(0, 15);
+            this.lblId.TabIndex = 9;
+            // 
+            // lblIdText
+            // 
+            this.lblIdText.AutoSize = true;
+            this.lblIdText.Location = new System.Drawing.Point(349, 15);
+            this.lblIdText.Name = "lblIdText";
+            this.lblIdText.Size = new System.Drawing.Size(24, 15);
+            this.lblIdText.TabIndex = 8;
+            this.lblIdText.Text = "ID: ";
+            // 
+            // dgvUsuarios
+            // 
+            this.dgvUsuarios.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvUsuarios.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Id,
+            this.Nome,
+            this.Telefone,
+            this.CPF});
+            this.dgvUsuarios.Location = new System.Drawing.Point(3, 160);
+            this.dgvUsuarios.Name = "dgvUsuarios";
+            this.dgvUsuarios.RowTemplate.Height = 25;
+            this.dgvUsuarios.Size = new System.Drawing.Size(434, 290);
+            this.dgvUsuarios.TabIndex = 7;
+            this.dgvUsuarios.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvUsuarios_CellDoubleClick);
+            // 
+            // Id
+            // 
+            this.Id.DataPropertyName = "Id";
+            this.Id.HeaderText = "#";
+            this.Id.Name = "Id";
+            // 
+            // Nome
+            // 
+            this.Nome.DataPropertyName = "Nome";
+            this.Nome.HeaderText = "Nome";
+            this.Nome.Name = "Nome";
+            // 
+            // Telefone
+            // 
+            this.Telefone.DataPropertyName = "Telefone";
+            this.Telefone.HeaderText = "Telefone";
+            this.Telefone.Name = "Telefone";
+            // 
+            // CPF
+            // 
+            this.CPF.DataPropertyName = "CPF";
+            this.CPF.HeaderText = "CPF";
+            this.CPF.Name = "CPF";
             // 
             // tabPageEnderecos
             // 
@@ -170,7 +238,7 @@ namespace TresCamadas
             this.tabPageEnderecos.Controls.Add(this.label7);
             this.tabPageEnderecos.Location = new System.Drawing.Point(4, 24);
             this.tabPageEnderecos.Name = "tabPageEnderecos";
-            this.tabPageEnderecos.Size = new System.Drawing.Size(424, 450);
+            this.tabPageEnderecos.Size = new System.Drawing.Size(440, 453);
             this.tabPageEnderecos.TabIndex = 3;
             this.tabPageEnderecos.Text = "Endereços";
             this.tabPageEnderecos.UseVisualStyleBackColor = true;
@@ -281,7 +349,7 @@ namespace TresCamadas
             this.tabPageResultado.Controls.Add(this.lblCPFResult);
             this.tabPageResultado.Location = new System.Drawing.Point(4, 24);
             this.tabPageResultado.Name = "tabPageResultado";
-            this.tabPageResultado.Size = new System.Drawing.Size(424, 450);
+            this.tabPageResultado.Size = new System.Drawing.Size(440, 453);
             this.tabPageResultado.TabIndex = 2;
             this.tabPageResultado.Text = "Resultado";
             this.tabPageResultado.UseVisualStyleBackColor = true;
@@ -343,11 +411,22 @@ namespace TresCamadas
             this.lblCPFResult.TabIndex = 6;
             this.lblCPFResult.Text = "CPF:";
             // 
+            // btnDeletar
+            // 
+            this.btnDeletar.Location = new System.Drawing.Point(329, 499);
+            this.btnDeletar.Name = "btnDeletar";
+            this.btnDeletar.Size = new System.Drawing.Size(112, 28);
+            this.btnDeletar.TabIndex = 10;
+            this.btnDeletar.Text = "Deletar";
+            this.btnDeletar.UseVisualStyleBackColor = true;
+            this.btnDeletar.Click += new System.EventHandler(this.btnDeletar_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(456, 502);
+            this.ClientSize = new System.Drawing.Size(466, 550);
+            this.Controls.Add(this.btnDeletar);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -355,6 +434,7 @@ namespace TresCamadas
             this.tabControl1.ResumeLayout(false);
             this.tabPageUsuarios.ResumeLayout(false);
             this.tabPageUsuarios.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUsuarios)).EndInit();
             this.tabPageEnderecos.ResumeLayout(false);
             this.tabPageEnderecos.PerformLayout();
             this.tabPageResultado.ResumeLayout(false);
@@ -394,6 +474,14 @@ namespace TresCamadas
         private System.Windows.Forms.DataGridView dgvEnderecos;
         private System.Windows.Forms.Button btnPesquisar;
         private System.Windows.Forms.ComboBox cbxNomeUsuario;
+        private System.Windows.Forms.DataGridView dgvUsuarios;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Id;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Nome;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Telefone;
+        private System.Windows.Forms.DataGridViewTextBoxColumn CPF;
+        private System.Windows.Forms.Label lblIdText;
+        private System.Windows.Forms.Label lblId;
+        private System.Windows.Forms.Button btnDeletar;
     }
 }
 

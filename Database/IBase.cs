@@ -10,7 +10,7 @@ namespace Database
         /// <summary>
         /// Chave
         /// </summary>
-        string Key { get; }
+        int Key { get; }
 
         /// <summary>
         /// Salvar

@@ -8,6 +8,11 @@ namespace Business
     /// </summary>
     public class Usuario : Base
     {
+        /// <summary>
+        /// Id do Usuário
+        /// </summary>
+        [OpcoesBase(ChavePrimaria = true, UsarNoBancoDeDados = true, UsarParaBuscar = true, Identity = true)]
+        public int Id { get; set; }
 
         /// <summary>
         /// Nome do usuários
@@ -24,7 +29,7 @@ namespace Business
         /// <summary>
         /// CPF do usuário
         /// </summary>
-        [OpcoesBase(UsarNoBancoDeDados = true, ChavePrimaria = true, UsarParaBuscar = true)]
+        [OpcoesBase(UsarNoBancoDeDados = true, UsarParaBuscar = true)]
         public string CPF { get; set; }
 
         /// <summary>
@@ -50,6 +55,21 @@ namespace Business
         public override string ToString()
         {
             return Nome;
+        }
+
+        /// <summary>
+        /// Todos
+        /// </summary>
+        /// <returns></returns>
+        public List<Usuario> Todos()
+        {
+            var usuarios = new List<Usuario>();
+            foreach (var ibase in base.Todos())
+            {
+                Usuario usuario = (Usuario)ibase;
+                usuarios.Add(usuario);
+            }
+            return usuarios;
         }
     }
 }

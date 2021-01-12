@@ -11,15 +11,17 @@ namespace TresCamadas
         public Form1()
         {
             InitializeComponent();
-            LoadCombos();
         }
 
         private void LoadCombos()
         {
             cbxNomeUsuario.DataSource = null;
             cbxUsuario.DataSource = null;
+            dgvUsuarios.DataSource = null;
+            dgvUsuarios.AutoGenerateColumns = false;
             cbxNomeUsuario.DataSource = new Usuario().Todos() ?? null;
             cbxUsuario.DataSource = new Usuario().Todos() ?? null;
+            dgvUsuarios.DataSource = new Usuario().Todos() ?? null;
         }
 
         private void btnGravar_Click(object sender, EventArgs e)
@@ -28,8 +30,10 @@ namespace TresCamadas
             usuario.Nome = txtNome.Text;
             usuario.Telefone = mtxtTelefone.Text;
             usuario.CPF = mtxtCPF.Text;
+            usuario.Id = int.Parse(string.IsNullOrEmpty(lblId.Text) ? "0" : lblId.Text);
             usuario.Salvar();
 
+            Limpar();
             MessageBox.Show("Usuário Salvo com sucesso!");
             LoadCombos();
         }
@@ -45,6 +49,7 @@ namespace TresCamadas
 
             endereco.Salvar();
 
+            Limpar();
             MessageBox.Show("Endereco Salvo com sucesso!");
             LoadCombos();
         }
@@ -53,7 +58,7 @@ namespace TresCamadas
         {
             dgvEnderecos.DataSource = null;
             var usu = ((Usuario)cbxNomeUsuario.SelectedValue);
-            dgvEnderecos.DataSource = usu.Enderecos;
+            dgvEnderecos.DataSource = usu?.Enderecos;
             if (usu != null)
             {
                 lblTelResult.Text = $"Telefone: {usu.Telefone}";
@@ -69,6 +74,44 @@ namespace TresCamadas
             fornecedor.Especialidades = "Concerta computadores";
             fornecedor.Salvar();*/
             LoadCombos();
+        }
+
+        private void dgvUsuarios_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            Usuario usuario = (Usuario)dgvUsuarios.Rows[e.RowIndex].DataBoundItem;
+            txtNome.Text = usuario.Nome;
+            mtxtTelefone.Text = usuario.Telefone;
+            mtxtCPF.Text = usuario.CPF;
+            lblId.Text = usuario.Id.ToString();
+            btnGravar.Text = "Alterar";
+        }
+
+        private void Limpar()
+        {
+            txtNome.Clear();
+            mtxtTelefone.Clear();
+            mtxtCPF.Clear();
+            lblId.Text = "";
+            btnGravar.Text = "Gravar";
+        }
+
+        private void btnDeletar_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewCell cell in dgvUsuarios.SelectedCells)
+            {
+                if (cell.RowIndex != -1)
+                {
+                    Usuario usuario = ((Usuario)(dgvUsuarios.Rows[cell.RowIndex].DataBoundItem));
+                    var retorno = MessageBox.Show($"Tem certeza que deseja excluir o usuário {usuario.Nome}?", "Excluir", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (retorno == DialogResult.Yes)
+                    {
+                        usuario.Deletar();
+                        MessageBox.Show($"Usuario {usuario.Nome} deletado com sucesso!");
+                        LoadCombos();
+                    }
+                    break;
+                }
+            }
         }
     }
 }
